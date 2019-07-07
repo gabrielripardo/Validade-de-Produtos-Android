@@ -1,0 +1,259 @@
+package com.example.controlevalidadeprodutos;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView editId;
+    EditText editNome;
+    EditText editMarca;
+    EditText editQuantidade;
+    EditText editFabricacao;
+    EditText editValidade;
+    EditText editNotificacao;
+    Button btnLimpar, btnSalvar, btnExcluir, btnTrocar;
+    ListView listViewProdutos;
+    BancoDados bd = new BancoDados(this);
+
+    ArrayAdapter<String> adapter;
+    ArrayList<String> arrayList;
+
+    InputMethodManager imm;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editId = (TextView)findViewById(R.id.editId);
+        editNome = (EditText)findViewById(R.id.editNome);
+        editMarca = (EditText)findViewById(R.id.editMarca);
+        editQuantidade = (EditText)findViewById(R.id.editQuantidade);
+        editFabricacao = (EditText)findViewById(R.id.editFabricacao);
+        editValidade = (EditText)findViewById(R.id.editValidade);
+        editNotificacao = (EditText)findViewById(R.id.editNotificacao);
+
+        btnLimpar = (Button)findViewById(R.id.btnLimpar);
+        btnSalvar = (Button)findViewById(R.id.btnSalvar);
+        btnExcluir = (Button)findViewById(R.id.btnExcluir);
+        btnTrocar = (Button)findViewById(R.id.btnTrocar);
+
+        imm = (InputMethodManager) this.getSystemService(Service.INPUT_METHOD_SERVICE);
+
+        listViewProdutos = (ListView)findViewById(R.id.listViewProdutos);
+
+        listarProdutos(); //exibe os produtos na tela
+        btnLimpar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                limparCampos();
+            }
+        });
+
+
+        btnTrocar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(MainActivity.this, Aplicacao.class);
+                startActivity(it);
+            }
+        });
+
+
+        btnSalvar.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                String id = editId.getText().toString();
+                String nome = editNome.getText().toString();
+                String marca = editMarca.getText().toString();
+                String quantidade = editQuantidade.getText().toString();
+                String fabricacao = editFabricacao.getText().toString();
+                String validade = editValidade.getText().toString();
+                String notificacao = editNotificacao.getText().toString();
+
+
+                if(nome.isEmpty()) {
+                    editNome.setError("Este campo é obrigatório!");
+                }
+                else if(marca.isEmpty()) {
+                    editMarca.setError("Este campo é obrigatório!");
+                }
+                else if(quantidade.isEmpty()) {
+                    editQuantidade.setError("Este campo é obrigatório!");
+                }
+                else if(fabricacao.isEmpty()) {
+                    editFabricacao.setError("Este campo é obrigatório!");
+                }
+                else if(validade.isEmpty()) {
+                    editValidade.setError("Este campo é obrigatório!");
+                }
+                else if(notificacao.isEmpty()) {
+                    editNotificacao.setError("Este campo é obrigatório!");
+                }
+                else if(id.isEmpty()){
+                    //insert
+                    bd.addProduto(new Produto(nome, marca, Integer.parseInt(quantidade), fabricacao, validade, Integer.parseInt(notificacao)));
+                    limparCampos();
+                    listarProdutos();
+                    Toast.makeText(MainActivity.this, "Produto Adicionado com Sucesso!", Toast.LENGTH_LONG).show();
+                    esconderTeclado();
+                }else {
+                    //update
+                    Produto produto = bd.selecionarProduto(Integer.parseInt(id));
+                    produto.setNome(nome);
+                    produto.setMarca(marca);
+                    produto.setQuantidade(Integer.parseInt(quantidade));
+                    produto.setFabricacao(fabricacao);
+                    produto.setValidade(validade);
+                    produto.setNotificacao(Integer.parseInt(notificacao));
+                    bd.atualizaProduto(produto);
+
+                    limparCampos();
+                    listarProdutos();
+                    Toast.makeText(MainActivity.this, "Produto Alterado com Sucesso!", Toast.LENGTH_LONG).show();
+                    esconderTeclado();
+                }
+            }
+        });
+
+        btnExcluir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String id =  editId.getText().toString();
+
+                if(id.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Nenhum Produto Selecionado!", Toast.LENGTH_LONG).show();
+                    esconderTeclado();
+                }else {
+                    Produto produto = bd.selecionarProduto(Integer.parseInt(id));
+                    bd.apagarProduto(produto);
+                    limparCampos();
+                    listarProdutos();
+                    Toast.makeText(MainActivity.this, "Produto Apagado com Sucesso!", Toast.LENGTH_LONG).show();
+                    esconderTeclado();
+                }
+
+
+            }
+        });
+
+
+        listViewProdutos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String conteudo = (String) listViewProdutos.getItemAtPosition(i);
+               // Toast.makeText(MainActivity.this, "Selecionado: " + conteudo, Toast.LENGTH_LONG).show();
+
+                String codigo = conteudo.substring(0, conteudo.indexOf("-"));
+                Produto produto = bd.selecionarProduto(Integer.parseInt(codigo));
+                editId.setText(String.valueOf(produto.getId()));
+                editNome.setText(produto.getNome());
+                editMarca.setText(produto.getMarca());
+                editQuantidade.setText(String.valueOf(produto.getQuantidade()));
+                editFabricacao.setText(produto.getFabricacao());
+                editValidade.setText(produto.getValidade());
+                editNotificacao.setText(String.valueOf(produto.getNotificacao()));
+            }
+        });
+
+
+
+        //adicionar
+       // bd.addProduto(new Produto("Arroz", "Tio Jorge", 10, "11/05/2019", "30/07/2019", 15));
+       // bd.addProduto(new Produto("Feijão", "Tio Jorge", 10, "11/05/2019", "30/07/2019", 15));
+        //bd.addProduto(new Produto("Macarrão", "Tio Jorge", 10, "11/05/2019", "30/07/2019", 15));
+       // bd.addProduto(new Produto("Suco", "Tio Jorge", 10, "11/05/2019", "30/07/2019", 15));
+
+        //apagar
+        //Produto produto = bd.selecionarProduto(2);
+        //bd.apagarProduto(produto);
+
+        //selecionar
+        //Produto produto = bd.selecionarProduto(2);
+
+        //atualizar
+        //Produto produto = bd.selecionarProduto(2);
+        //produto.setMarca("Tia Maria");
+        //bd.atualizaProduto(produto);
+
+        //mostra aviso na tela
+        //Toast.makeText(MainActivity.this, "Apagado2 Com Sucesso", Toast.LENGTH_LONG).show();
+        //mostra no log
+        //Log.d("Produto Selecionado", "Produto: " + produto.getNome() + " " + produto.getMarca());
+
+        //Produto produto = bd.selecionarProduto(2);
+
+
+        //produto.setMarca("Tia Maria");
+
+
+       // bd.atualizaProduto(produto);
+       // Toast.makeText(MainActivity.this, "Apagado3 Com Sucesso", Toast.LENGTH_LONG).show();
+       // Log.d("Produto Selecionado", "Produto: " + produto.getNome() + " " + produto.getMarca());
+    }
+
+    public void listarProdutos(){
+        List<Produto> produtos = bd.listarTodosProdutos();
+
+        arrayList = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, arrayList);
+
+        listViewProdutos.setAdapter(adapter);
+
+        for(Produto p : produtos) {
+            Log.d("Lista", "\nID " + p.getId() + " Nome: " + p.getNome() +" "+ p.getMarca());
+
+            arrayList.add(p.getId() + "-"+p.getNome() + " "+ p.getMarca());
+
+            adapter.notifyDataSetChanged();
+
+
+        }
+
+
+    }
+
+    void esconderTeclado() {
+        imm.hideSoftInputFromWindow(editNome.getWindowToken(), 0);
+    }
+
+
+    void limparCampos() {
+        editId.setText("");
+        editNome.setText("");
+        editMarca.setText("");
+        editQuantidade.setText("");
+        editFabricacao.setText("");
+        editValidade.setText("");
+        editNotificacao.setText("");
+
+        editNome.requestFocus();
+    }
+
+
+
+
+}

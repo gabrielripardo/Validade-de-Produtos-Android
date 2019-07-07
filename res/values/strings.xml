@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Controle Validade Produtos</string>
+    <string name="nome">Nome</string>
+    <string name="marca">Marca</string>
+    <string name="quantidade">Quantidade</string>
+    <string name="fabrica_o">fabricação</string>
+    <string name="validade">Validade</string>
+    <string name="notificacao">Notificacao</string>
+    <string name="notifica_o">Notificação</string>
+    <string name="codigo">Codigo</string>
+    <string name="title_activity_aplicacao">Aplicacao</string>
+    <string name="todo">TODO</string>
+    <string name="title_activity_login">Entrar</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="title_activity_produtos_perfil">ProdutosPerfil</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string-array name="titles_tab">
+        <item>Produtos</item>
+        <item>Perfil</item>
+    </string-array>
+    <string name="text_fragment_a">Essa é a fragment A</string>
+    <string name="text_fragment_b">Essa é a fragment B</string>
+</resources>

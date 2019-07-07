@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <EditText
+        android:id="@+id/editNome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/nome"
+        android:inputType="textPersonName"
+        android:text="@string/nome" />
+
+    <EditText
+        android:id="@+id/editMarca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/marca"
+        android:inputType="textPersonName"
+        android:text="@string/marca" />
+
+    <EditText
+        android:id="@+id/editQuantidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/quantidade"
+        android:inputType="number"
+        android:text="@string/quantidade" />
+
+    <EditText
+        android:id="@+id/editFabricacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/fabrica_o"
+        android:inputType="date"
+        android:text="@string/fabrica_o" />
+
+    <EditText
+        android:id="@+id/editValidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/validade"
+        android:inputType="date"
+        android:text="@string/validade" />
+
+    <EditText
+        android:id="@+id/editNotificacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/notificacao"
+        android:inputType="numberDecimal"
+        android:text="@string/notifica_o" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnLimpar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button"
+            tools:text="Limpar" />
+
+        <Button
+            android:id="@+id/btnSalvar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button"
+            tools:text="Salvar" />
+
+        <Button
+            android:id="@+id/btnExcluir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button"
+            tools:text="Excluir" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listaProdutos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

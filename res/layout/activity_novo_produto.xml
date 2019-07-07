@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".novoProduto"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/editNome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:capitalize="none"
+        android:ems="10"
+        android:hint="@string/nome"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/editMarca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:capitalize="none"
+        android:ems="10"
+        android:hint="@string/marca"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/editQuantidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/quantidade"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/editFabricacao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/fabrica_o"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/editValidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/validade"
+        android:inputType="date" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notificação" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rdQuinze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="15 Dias" />
+
+        <RadioButton
+            android:id="@+id/rdTrinta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="90 Dias" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnLimpar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Limpar"
+            tools:text="Limpar" />
+
+        <Button
+            android:id="@+id/btnSalvar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Salvar"
+            tools:text="Salvar" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
