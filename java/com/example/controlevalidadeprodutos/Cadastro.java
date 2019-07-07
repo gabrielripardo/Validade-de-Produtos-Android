@@ -11,6 +11,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Cadastro extends AppCompatActivity {
 
 
@@ -36,14 +39,10 @@ public class Cadastro extends AppCompatActivity {
         genFem = (RadioButton)findViewById(R.id.rdFem);
         rdGroup = (RadioGroup)findViewById(R.id.rdGenero);
 
-
-
         //Cria a ação do botão cadastrar
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 //Cria as variáveis usuario e senha e pega os dados de dentro do campo de texto
                 String usuario = txtUsuarioCadastro.getText().toString();
                 String senha = txtSenhaCadastro.getText().toString();
@@ -71,30 +70,32 @@ public class Cadastro extends AppCompatActivity {
 
                 }else {
                     //Se os campos estiverem todos preenchidos e o usuário não existir, é criado um novo usuário
-                    bd.addUsuario(new Usuario(usuario, senha, genero));
+                    if(verificarSenha(senha)){
+                        bd.addUsuario(new Usuario(usuario, senha, genero));
+                        //emite uma notificação na tela
+                        Toast.makeText(Cadastro.this, "Usuário "+usuario+" cadastrado com sucesso!", Toast.LENGTH_LONG).show();
 
-                    //emite uma notificação na tela
-                    Toast.makeText(Cadastro.this, "Usuário "+usuario+" cadastrado com sucesso!", Toast.LENGTH_LONG).show();
-
-                    //limpa todos os campos do formulário
-                    txtSenhaCadastro.setText("");
-                    txtUsuarioCadastro.setText("");
-                    genMasc.setChecked(false);
-                    genFem.setChecked(false);
+                        //limpa todos os campos do formulário
+                        txtSenhaCadastro.setText("");
+                        txtUsuarioCadastro.setText("");
+                        genMasc.setChecked(false);
+                        genFem.setChecked(false);
+                    }else{
+                        Toast.makeText(Cadastro.this, "A Senha fornecida contém caracter especial!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Cadastro.this, "Utilize somente letras e números.", Toast.LENGTH_LONG).show();
+                    }
                 }
-
-
-
-
-
-
-
-
             }
         });
+    }
+    boolean verificarSenha(String senha) {
+        String regex = "[$&+,:;=?@#|'<>.^*()%!-]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(senha);
 
-
-
-
+        if (!matcher.find()){
+            return true;
+        }
+        return false;
     }
 }
