@@ -15,24 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
-
 import net.danlew.android.joda.JodaTimeAndroid;
-
-
-
 
 public class ItemProduto extends AppCompatActivity {
 
     //Cria as variáveis e a instância do banco de dados
     private int codigo;
     BancoDados bd = new BancoDados(this);
-
     EditText editNome;
     EditText editMarca;
     EditText editQuantidade;
@@ -62,13 +54,11 @@ public class ItemProduto extends AppCompatActivity {
         btnSalvar = (Button)findViewById(R.id.btnSalvar);
         btnExcluir = (Button)findViewById(R.id.btnExcluir);
 
-
         if (rdEditQuinze.isChecked()){
             editNotificacao = 15;
         } else if (rdEditTrinta.isChecked()) {
             editNotificacao = 90;
         }
-
 
         //Atribui uma máscara de data para os campos fabricação e validade, impedindo que o usuário
         //coloque letras e mais caracteres que uma data tem.
@@ -76,21 +66,15 @@ public class ItemProduto extends AppCompatActivity {
         SimpleMaskFormatter smfFab = new SimpleMaskFormatter("NN/NN/NNNN");
         MaskTextWatcher mtwFab = new MaskTextWatcher(editFabricacao, smfFab);
         editFabricacao.addTextChangedListener(mtwFab);
-
-
         SimpleMaskFormatter smfVal = new SimpleMaskFormatter("NN/NN/NNNN");
         MaskTextWatcher mtwVal = new MaskTextWatcher(editValidade, smfVal);
         editValidade.addTextChangedListener(mtwVal);
-
-
         Intent it = getIntent();
         Bundle parametros = it.getExtras();
-
 
         //Verifica se a variável parametros não está vazia, caso verdadeiro, preenche os dados de acordo com o ID do produto.
         if (parametros != null) {
             this.codigo = parametros.getInt("idProduto");
-
             Produto produto = bd.selecionarProduto(codigo);
 
             editNome.setText(produto.getNome());
@@ -113,65 +97,71 @@ public class ItemProduto extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                int id = codigo;
-                String nome = editNome.getText().toString();
-                String marca = editMarca.getText().toString();
-                String quantidade = editQuantidade.getText().toString();
-                String fabricacao = editFabricacao.getText().toString();
-                String validade = editValidade.getText().toString();
+            int id = codigo;
+            String nome = editNome.getText().toString();
+            String marca = editMarca.getText().toString();
+            String quantidade = editQuantidade.getText().toString();
+            String fabricacao = editFabricacao.getText().toString();
+            String validade = editValidade.getText().toString();
 
+            int notificacao = 0;
+            if (rdEditQuinze.isChecked()){
+                notificacao = 15;
 
-                int notificacao = 0;
-                if (rdEditQuinze.isChecked()){
-                    notificacao = 15;
+            } else if (rdEditTrinta.isChecked()) {
+                notificacao = 90;
+            }
 
-                } else if (rdEditTrinta.isChecked()) {
-                    notificacao = 90;
+            if(nome.isEmpty()) {
+                editNome.setError("Este campo é obrigatório!");
+            }
+            else if(marca.isEmpty()) {
+                editMarca.setError("Este campo é obrigatório!");
+            }
+            else if(quantidade.isEmpty()) {
+                editQuantidade.setError("Este campo é obrigatório!");
+            }
+            else if(fabricacao.isEmpty()) {
+                editFabricacao.setError("Este campo é obrigatório!");
+            }
+            else if(validade.isEmpty()) {
+                editValidade.setError("Este campo é obrigatório!");
+            }else{
+                if(fabricacao.length() == 10 && validade.length() == 10){
+                    Date fabri = new Date(fabricacao);
+                    Date valid = new Date(validade);
 
+                    if (fabri.before(valid)) {
+                        try {
+                            Produto produto = bd.selecionarProduto(codigo);
+                            produto.setNome(nome);
+                            produto.setMarca(marca);
+                            produto.setQuantidade(Integer.parseInt(quantidade));
+                            produto.setFabricacao(fabricacao);
+                            produto.setValidade(validade);
+                            produto.setNotificacao(notificacao);
+                            bd.atualizaProduto(produto);
+                            Toast.makeText(ItemProduto.this, "Produto Alterado com Sucesso!", Toast.LENGTH_LONG).show();
+
+                            esconderTeclado();
+                        } catch (Exception e) {
+                            Toast.makeText(ItemProduto.this, "Ocorreu um erro ao alterar o produto!", Toast.LENGTH_LONG).show();
+                        }
+                    } else if (fabri.after(valid)) {
+                        Toast.makeText(ItemProduto.this, "Data de fabricação deve ser menor que a de validade!", Toast.LENGTH_LONG).show();
+                    } else if (fabri.equals(valid)) {
+                        Toast.makeText(ItemProduto.this, "Data de fabricação e de validade devem ser diferentes!", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Preencha os campos corretamente!", Toast.LENGTH_LONG).show();
                 }
-
-                if(nome.isEmpty()) {
-                    editNome.setError("Este campo é obrigatório!");
-                }
-                else if(marca.isEmpty()) {
-                    editMarca.setError("Este campo é obrigatório!");
-                }
-                else if(quantidade.isEmpty()) {
-                    editQuantidade.setError("Este campo é obrigatório!");
-                }
-                else if(fabricacao.isEmpty()) {
-                    editFabricacao.setError("Este campo é obrigatório!");
-                }
-                else if(validade.isEmpty()) {
-                    editValidade.setError("Este campo é obrigatório!");
-                }
-
-
-                Produto produto = bd.selecionarProduto(codigo);
-                produto.setNome(nome);
-                produto.setMarca(marca);
-                produto.setQuantidade(Integer.parseInt(quantidade));
-                produto.setFabricacao(fabricacao);
-                produto.setValidade(validade);
-                produto.setNotificacao(notificacao);
-                bd.atualizaProduto(produto);
-                Toast.makeText(ItemProduto.this, "Produto Alterado com Sucesso!", Toast.LENGTH_LONG).show();
-
-                esconderTeclado();
-
-
-
-
+            }
             }
         });
-
-
         //Ações do botão excluir.
         btnExcluir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 //Seleciona o produto no banco de dados e coloca no Objeto produto
                 Produto produto = bd.selecionarProduto(codigo);
 
@@ -198,28 +188,11 @@ public class ItemProduto extends AppCompatActivity {
 
                 //mostra o alerta
                 alerta.show();
-
-
-
-
-
             }
         });
-
-
-
-
     }
-
-
-
-
     //método para esconder o teclado quando o usuario clicar em salvar.
-    void esconderTeclado() {
+    void esconderTeclado(){
         imm.hideSoftInputFromWindow(editNome.getWindowToken(), 0);
     }
-
-
-
-
 }
